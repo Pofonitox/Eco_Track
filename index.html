@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EcoTrack Lima: mapa de escenarios ambientales, seguimiento por zonas y registro de residuos, con detalle del campus UCV San Juan de Lurigancho.">
+  <title>EcoTrack | Inteligencia de residuos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="#" aria-label="EcoTrack inicio">
+      <span class="brand-mark">↻</span>
+      <span><strong>EcoTrack</strong><small>INTELIGENCIA AMBIENTAL</small></span>
+    </a>
+    <div class="side-label">MENÚ PRINCIPAL</div>
+    <nav>
+      <a class="nav-link active" href="#dashboard"><span>▦</span> Resumen general</a>
+      <a class="nav-link" href="#mapa"><span>⌖</span> Mapa de Lima</a>
+      <a class="nav-link" href="#registro"><span>＋</span> Registrar residuo</a>
+      <a class="nav-link" href="#registros"><span>☷</span> Historial de datos</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="status-dot"></div>
+      <div><strong>Monitoreo ambiental</strong><small>EcoTrack Lima · 2.0</small></div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">PANEL DE INTELIGENCIA DE NEGOCIOS</div>
+        <h1>Panel de sostenibilidad</h1>
+        <p class="muted">Explora distritos, zonas y puntos de seguimiento ambiental. Especializado en el campus UCV de San Juan de Lurigancho.</p>
+      </div>
+      <div class="top-actions">
+        <span class="today" id="todayLabel"></span>
+        <button class="btn btn-primary" id="topAddBtn">＋ Nuevo registro</button>
+      </div>
+    </header>
+
+    <section id="dashboard">
+      <div class="section-heading">
+        <div><h2>Resumen general</h2><p class="muted">Indicadores calculados a partir de los registros guardados en este dispositivo.</p></div>
+        <div class="filters">
+          <select id="filterZone" aria-label="Filtrar por zona"><option value="">Todos los distritos</option></select>
+          <select id="filterType" aria-label="Filtrar por tipo"><option value="">Todos los residuos</option></select>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <article class="kpi-card"><div class="kpi-top"><span>Peso total registrado</span><span class="kpi-icon green">⚖</span></div><strong id="totalWeight">0.0 <small>kg</small></strong><p class="kpi-note">Total de residuos registrados</p></article>
+        <article class="kpi-card"><div class="kpi-top"><span>Peso recuperado</span><span class="kpi-icon mint">♻</span></div><strong id="recoveredWeight">0.0 <small>kg</small></strong><p class="kpi-note">Reciclaje y reutilización</p></article>
+        <article class="kpi-card"><div class="kpi-top"><span>Porcentaje recuperado</span><span class="kpi-icon blue">↗</span></div><strong id="recoveredPercent">0<small>%</small></strong><p class="kpi-note">Del peso total registrado</p></article>
+        <article class="kpi-card"><div class="kpi-top"><span>N.º de registros</span><span class="kpi-icon orange">▤</span></div><strong id="recordCount">0</strong><p class="kpi-note">Eventos de registro</p></article>
+      </div>
+
+      <section id="mapa" class="map-section panel">
+        <div class="panel-heading"><div><h3>Mapa interactivo de acumulación de residuos</h3><p class="muted">Explora Lima o acércate a la UCV para consultar sus pabellones y espacios.</p></div><span class="chart-tag">LIMA + CAMPUS UCV SJL</span></div>
+        <div class="map-toolbar">
+          <div class="map-search-box">
+            <label for="mapSearch" class="sr-only">Buscar distrito, zona o punto del mapa</label>
+            <span class="search-icon">⌕</span>
+            <input id="mapSearch" type="search" placeholder="Buscar distrito, zona, pabellón o patio de comidas…" autocomplete="off">
+            <button id="mapSearchBtn" class="btn btn-primary" type="button">Buscar</button>
+            <div class="map-results" id="mapResults" hidden></div>
+          </div>
+          <button id="focusUcvBtn" class="btn btn-outline" type="button">⌖ Ver campus UCV</button>
+          <button id="resetMapBtn" class="btn btn-outline" type="button">Toda Lima</button>
+        </div>
+        <div class="map-legend"><span><i class="legend-dot low"></i> Índice bajo</span><span><i class="legend-dot medium"></i> Índice medio</span><span><i class="legend-dot high"></i> Índice alto</span><span><i class="legend-dot campus"></i> Puntos del campus</span></div>
+        <div class="map-layout">
+          <div id="limaMap" role="application" aria-label="Mapa interactivo con búsqueda de distritos, zonas y puntos de seguimiento"></div>
+          <aside class="campus-panel" aria-label="Detalle del campus UCV">
+            <div class="campus-panel-head"><span class="mini-eyebrow">SEGUIMIENTO LOCAL</span><h4>UCV · San Juan de Lurigancho</h4><p>Av. del Parque 640, Canto Rey</p></div>
+            <div class="campus-mini-stats"><div><strong id="campusPointCount">0</strong><span>puntos en mapa</span></div><div><strong id="campusBaseline">0 kg</strong><span>índice del escenario</span></div><div><strong id="campusRecordCount">0</strong><span>registros ingresados</span></div></div>
+            <div class="campus-list-title">Pabellones y espacios <span>Selecciona para acercarte</span></div>
+            <div id="campusPointsList" class="campus-points-list"></div>
+          </aside>
+        </div>
+        <p class="map-note">Los índices del mapa son valores de referencia de un escenario académico, no mediciones oficiales. Los registros ingresados por ti se muestran por separado. Las posiciones interiores del campus son orientativas.</p>
+      </section>
+
+      <div class="charts-grid">
+        <article class="panel chart-panel">
+          <div class="panel-heading"><div><h3>Residuos por categoría</h3><p class="muted">Peso acumulado en kilogramos</p></div><span class="chart-tag">POR TIPO</span></div>
+          <div id="typeChart" class="bar-chart"></div>
+        </article>
+        <article class="panel chart-panel">
+          <div class="panel-heading"><div><h3>Distribución por destino</h3><p class="muted">Clasificación de los registros</p></div><span class="chart-tag">DESTINO</span></div>
+          <div class="donut-wrap"><div class="donut" id="destinationDonut"><div><strong id="donutTotal">0</strong><small>registros</small></div></div><div id="destinationLegend" class="legend"></div></div>
+        </article>
+        <article class="panel chart-panel wide">
+          <div class="panel-heading"><div><h3>Registros por fecha</h3><p class="muted">Evolución del peso registrado</p></div><span class="chart-tag">TENDENCIA</span></div>
+          <div id="trendChart" class="trend-chart"></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="registro" class="lower-section">
+      <div class="section-heading"><div><h2>Registrar residuos</h2><p class="muted">Ubica el residuo por distrito → zona → punto específico y agrega información para su seguimiento.</p></div></div>
+      <div class="panel form-panel">
+        <form id="wasteForm">
+          <div class="form-section-title"><span>01</span><div><h3>Ubicación del hallazgo</h3><p>Los desplegables se actualizan según el distrito y la zona elegidos.</p></div></div>
+          <div class="form-grid">
+            <label>Fecha de registro<input type="date" id="date" required></label>
+            <label>Distrito<select id="zone" required><option value="">Seleccionar distrito</option></select></label>
+            <label>Zona / sector<select id="sector" required disabled><option value="">Primero selecciona un distrito</option></select></label>
+            <label id="customSectorLabel" class="custom-field" hidden>Nombre de la zona<input id="customSector" maxlength="75" placeholder="Escribe la zona o urbanización"></label>
+            <label>Punto específico<select id="place" required disabled><option value="">Primero selecciona una zona</option></select></label>
+            <label id="customPlaceLabel" class="custom-field" hidden>Nombre del punto<input id="customPlace" maxlength="85" placeholder="Ej. entrada lateral, aula 203…"></label>
+            <label>Tipo de ubicación<select id="locationType" required><option value="">Seleccionar</option><option>Contenedor de residuos</option><option>Punto de acumulación</option><option>Área de reciclaje</option><option>Espacio público</option><option>Zona de tránsito</option><option>Otro</option></select></label>
+          </div>
+          <div class="location-picker"><div><strong>Ubicación precisa en el mapa <span class="optional">(opcional)</span></strong><p id="coordinatesLabel">Puedes marcar la posición exacta con un clic en el mapa.</p></div><div class="location-actions"><button type="button" class="btn btn-outline" id="pickLocationBtn">⌖ Seleccionar en el mapa</button><button type="button" class="text-button" id="clearLocationBtn" hidden>Quitar pin</button></div></div>
+          <div class="form-section-title second"><span>02</span><div><h3>Caracterización del residuo</h3><p>Completa el peso y las condiciones del punto de acumulación.</p></div></div>
+          <div class="form-grid">
+            <label>Tipo de residuo<select id="type" required><option value="">Seleccionar categoría</option><option>Papel/cartón</option><option>Plástico</option><option>Vidrio</option><option>Metal</option><option>Orgánico</option><option>Otros</option></select></label>
+            <label>Peso (kg)<input type="number" id="weight" min="0.01" step="0.01" placeholder="Ej. 2.50" required></label>
+            <label>Destino<select id="destination" required><option value="">Seleccionar destino</option><option>Reciclaje</option><option>Reutilización</option><option>Disposición</option><option>Pendiente</option></select></label>
+            <label>Nivel de acumulación<select id="severity" required><option value="">Seleccionar nivel</option><option>Bajo</option><option>Medio</option><option>Alto</option><option>Crítico</option></select></label>
+            <label>Estado del seguimiento<select id="status" required><option value="Pendiente">Pendiente</option><option>En seguimiento</option><option>Atendido</option></select></label>
+            <label>Cantidad de bolsas <span class="optional">(opcional)</span><input type="number" id="bags" min="0" max="10000" step="1" placeholder="Ej. 4"></label>
+            <label>Frecuencia observada<select id="frequency"><option value="">Sin especificar</option><option>Ocasional</option><option>Diaria</option><option>Semanal</option><option>Recurrente</option></select></label>
+            <label class="span-2">Observaciones <span class="optional">(opcional)</span><textarea id="observation" maxlength="400" rows="3" placeholder="Ej. Plásticos acumulados junto al contenedor; requiere recojo o separación."></textarea></label>
+          </div>
+          <div class="form-footer"><p class="form-hint">Usa pesos medidos para tus registros. Los datos se guardan solo en este navegador. No ingreses información personal.</p><button class="btn btn-primary" type="submit">Guardar registro <span>→</span></button></div>
+          <p id="formMessage" class="form-message" role="status"></p>
+        </form>
+      </div>
+    </section>
+
+    <section id="registros" class="lower-section">
+      <div class="section-heading"><div><h2>Historial de registros</h2><p class="muted">Consulta tus registros y descarga el reporte de seguimiento junto con los índices del escenario.</p></div><div class="export-actions"><button class="btn btn-outline" id="excelBtn" type="button">↓ Excel (.xlsx)</button><button class="btn btn-outline" id="pdfBtn" type="button">↓ PDF</button></div></div>
+      <div class="panel table-panel">
+        <div class="table-scroll"><table><thead><tr><th>ID</th><th>Fecha</th><th>Distrito</th><th>Zona / sector</th><th>Punto</th><th>Residuo</th><th>Peso</th><th>Nivel</th><th>Estado</th><th>Destino</th><th></th></tr></thead><tbody id="recordsBody"></tbody></table></div>
+        <div id="emptyState" class="empty-state">Todavía no hay registros propios. Puedes empezar desde “Registrar residuos”; los índices de referencia ya están disponibles en el mapa.</div>
+        <div class="table-footer"><span id="tableCount">0 registros</span><span>Exporta registros e índices en Excel o PDF</span><button class="text-button danger-text" id="clearBtn">Eliminar todos</button></div>
+      </div>
+    </section>
+
+    <footer>EcoTrack <span>·</span> Prototipo académico de Inteligencia de Negocios <span>·</span> Índices referenciales para análisis; registros personales guardados en este navegador. <span>·</span> <a href="https://www.ucv.edu.pe/san-juan-de-lurigancho" target="_blank" rel="noopener noreferrer">Espacios oficiales UCV SJL</a></footer>
+  </main>
+  <div class="toast" id="toast" role="status"></div>
+  <link rel="stylesheet" href="vendor/leaflet.css">
+  <script src="vendor/leaflet.min.js"></script>
+  <script src="vendor/xlsx.min.js"></script>
+  <script src="vendor/jspdf.min.js"></script>
+  <script src="vendor/jspdf-autotable.min.js"></script>
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
